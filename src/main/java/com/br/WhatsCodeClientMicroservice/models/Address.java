@@ -1,9 +1,12 @@
-package com.br.WhatsCodeClientMicroservice.entity;
+package com.br.WhatsCodeClientMicroservice.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Entity
 public class Address {
 
@@ -28,5 +31,7 @@ public class Address {
 
     @Column
     private String complement;
+
+
 
 }
