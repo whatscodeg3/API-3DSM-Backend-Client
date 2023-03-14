@@ -37,5 +37,4 @@ public class Client {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Address address;
 
-
 }

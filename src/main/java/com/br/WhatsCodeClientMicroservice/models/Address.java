@@ -32,6 +32,4 @@ public class Address {
     @Column
     private String complement;
 
-
-
 }
