@@ -1,7 +1,9 @@
-package com.br.WhatsCodeClientMicroservice.entity;
+package com.br.WhatsCodeClientMicroservice.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.Data;
+import org.hibernate.validator.constraints.br.CPF;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -16,9 +18,11 @@ public class Client {
     @Column
     private String fullName;
     @Column
+    @CPF(message="cpf inválido")
     private String cpf;
 
     @Column
+    @Email(message="E-mail inválido")
     private String email;
 
     @Column
@@ -32,6 +36,5 @@ public class Client {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Address address;
-
 
 }
