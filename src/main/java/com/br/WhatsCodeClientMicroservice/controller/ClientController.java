@@ -6,12 +6,15 @@ import com.br.WhatsCodeClientMicroservice.models.Address;
 import com.br.WhatsCodeClientMicroservice.models.Client;
 import com.br.WhatsCodeClientMicroservice.models.ViaCepAddress;
 import com.br.WhatsCodeClientMicroservice.repository.ClientRepository;
+import com.br.WhatsCodeClientMicroservice.service.ClientService;
 import com.google.gson.Gson;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
@@ -19,13 +22,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
+@CrossOrigin
 @RequestMapping(value = "/client")
 public class ClientController {
+
+    @Autowired
+    private ClientService service;
 
     @Autowired
     private ClientRepository repository;
@@ -33,6 +38,7 @@ public class ClientController {
 
     @Autowired
     private AddresMapper mapper;
+
 
     @PostMapping("/create")
     public ResponseEntity<Void> create(@RequestBody @Valid Client newClient) throws Exception {
@@ -51,6 +57,20 @@ public class ClientController {
         return ResponseEntity.ok().build();
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationException(MethodArgumentNotValidException ex){
+        Map<String, String> erros = new HashMap<>();
+
+        ex.getBindingResult().getAllErrors().forEach((error) ->{
+            String fieldName = ((FieldError) error).getField();
+            String errorMensage = error.getDefaultMessage();
+            erros.put(fieldName, errorMensage);
+
+        });
+        return erros;
+    }
+
     @GetMapping("/query")
     public List<Client> getClients(){
         return repository.findAll();
@@ -60,6 +80,12 @@ public class ClientController {
     public Client getClientById( @PathVariable("id") long id){
         Optional<Client> client = repository.findById(id);
         return client.get();
+    }
+
+    @GetMapping("/queryFromCpf/{cpf}")
+    public Client getClientByCpf( @PathVariable("cpf") String cpf){
+        Client client = service.getByCpf(cpf);
+        return client;
     }
 
     @PutMapping("/update/{id}")
