@@ -41,20 +41,27 @@ public class ClientController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<Void> create(@RequestBody @Valid Client newClient) throws Exception {
+    public ResponseEntity create(@RequestBody @Valid Client newClient) throws Exception {
         // o objeto Client será passado do front já com o endereço trazido pelo viaCep
-        newClient.setDateRegister(new Date());
 
-        String complementAux = newClient.getAddress().getComplement(); //Será retirado quando o front for criado
+        if (service.checkExistingCpf(newClient)) {
 
-        newClient.setAddress(requestViaCep(newClient)); //Será retirado quando o front for criado
+            newClient.setDateRegister(new Date());
 
-        newClient.getAddress().setComplement(complementAux); //Será retirado quando o front for criado
+            String complementAux = newClient.getAddress().getComplement(); //Será retirado quando o front for criado
+
+            newClient.setAddress(requestViaCep(newClient)); //Será retirado quando o front for criado
+
+            newClient.getAddress().setComplement(complementAux); //Será retirado quando o front for criado
 
 
-        repository.save(newClient);
+            repository.save(newClient);
 
-        return ResponseEntity.ok().build();
+            return ResponseEntity.ok().build();
+
+        }else{
+            return ResponseEntity.badRequest().body("Cpf já cadastrado");
+        }
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

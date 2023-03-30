@@ -3,6 +3,7 @@ package com.br.WhatsCodeClientMicroservice.service;
 import com.br.WhatsCodeClientMicroservice.models.Client;
 import com.br.WhatsCodeClientMicroservice.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,14 @@ public class ClientService {
             }
         }
         return target;
+    }
+
+    public Boolean checkExistingCpf(Client client){
+        if(getByCpf(client.getCpf()) == null){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }
