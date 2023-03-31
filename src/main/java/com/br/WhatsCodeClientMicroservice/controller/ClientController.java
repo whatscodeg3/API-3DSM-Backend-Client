@@ -25,7 +25,7 @@ import java.net.URLConnection;
 import java.util.*;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "*")
 @RequestMapping(value = "/client")
 public class ClientController {
 
@@ -47,13 +47,6 @@ public class ClientController {
         if (service.checkExistingCpf(newClient)) {
 
             newClient.setDateRegister(new Date());
-
-            String complementAux = newClient.getAddress().getComplement(); //Será retirado quando o front for criado
-
-            newClient.setAddress(requestViaCep(newClient)); //Será retirado quando o front for criado
-
-            newClient.getAddress().setComplement(complementAux); //Será retirado quando o front for criado
-
 
             repository.save(newClient);
 
