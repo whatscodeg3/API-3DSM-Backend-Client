@@ -83,9 +83,12 @@ public class ClientController {
     }
 
     @GetMapping("/queryFromCpf/{cpf}")
-    public Client getClientByCpf( @PathVariable("cpf") String cpf){
+    public ResponseEntity<Object> getClientByCpf( @PathVariable("cpf") String cpf){
         Client client = service.getByCpf(cpf);
-        return client;
+        if(client == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum cliente encontrado.");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(client);
     }
 
     @PutMapping("/update/{id}")
