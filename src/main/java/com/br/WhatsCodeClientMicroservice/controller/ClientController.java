@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -23,6 +24,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -72,14 +76,27 @@ public class ClientController {
     }
 
     @GetMapping("/query")
-    public List<Client> getClients(){
-        return repository.findAll();
+    public ResponseEntity<List<Client>> getClients(){
+        List<Client> clients = repository.findAll();
+
+        for(Client client : clients) {
+            var clientId = client.getId();
+            Link selfLink = linkTo(ClientController.class).slash(clientId).withSelfRel();
+            client.add(selfLink);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(clients);
     }
 
     @GetMapping("/query/{id}")
-    public Client getClientById( @PathVariable("id") long id){
-        Optional<Client> client = repository.findById(id);
-        return client.get();
+    public ResponseEntity<Client> getClientById(@PathVariable("id") long id){
+        Optional<Client> optionalClient = repository.findById(id);
+        Client client = optionalClient.orElseThrow(() -> new RuntimeException("Client Not Found"));
+
+        Link clientsLink = linkTo(methodOn(ClientController.class).getClients()).withRel("allClients");
+        client.add(clientsLink);
+
+        return ResponseEntity.status(HttpStatus.OK).body(client);
     }
 
     @GetMapping("/queryFromCpf/{cpf}")
@@ -88,6 +105,8 @@ public class ClientController {
         if(client == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum cliente encontrado.");
         }
+        Link clientsLink = linkTo(methodOn(ClientController.class).getClients()).withRel("allClients");
+        client.add(clientsLink);
         return ResponseEntity.status(HttpStatus.OK).body(client);
     }
 
