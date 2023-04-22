@@ -4,13 +4,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
 import org.hibernate.validator.constraints.br.CPF;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
 @Data
-public class Client {
+public class Client extends RepresentationModel<Client> {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
