@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping(value = "/funcionario")
+@RequestMapping(value = "/employee")
 public class EmployeeController {
 
     @Autowired
