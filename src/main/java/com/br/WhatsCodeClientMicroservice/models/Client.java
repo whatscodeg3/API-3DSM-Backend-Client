@@ -35,6 +35,18 @@ public class Client extends RepresentationModel<Client> {
     @Column
     private Date dateRegister;
 
+    @Column
+    private String createdBy;
+
+    @Column
+    private Date createdAt;
+
+    @Column
+    private String updatedBy;
+
+    @Column
+    private Date updatedAt;
+
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Address address;
 

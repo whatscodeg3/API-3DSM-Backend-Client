@@ -4,16 +4,20 @@ import com.br.WhatsCodeClientMicroservice.dto.ClientDto;
 import com.br.WhatsCodeClientMicroservice.mapper.AddresMapper;
 import com.br.WhatsCodeClientMicroservice.models.Address;
 import com.br.WhatsCodeClientMicroservice.models.Client;
+import com.br.WhatsCodeClientMicroservice.models.Employee;
 import com.br.WhatsCodeClientMicroservice.models.ViaCepAddress;
 import com.br.WhatsCodeClientMicroservice.repository.ClientRepository;
 import com.br.WhatsCodeClientMicroservice.service.ClientService;
 import com.google.gson.Gson;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -45,12 +49,19 @@ public class ClientController {
 
 
     @PostMapping("/create")
+    @PreAuthorize("hasAnyAuthority('Comercial') or hasAnyAuthority('Administrador')")
     public ResponseEntity create(@RequestBody @Valid Client newClient) throws Exception {
         // o objeto Client será passado do front já com o endereço trazido pelo viaCep
 
         if (service.checkExistingCpf(newClient)) {
 
+            Employee employee = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
             newClient.setDateRegister(new Date());
+
+            newClient.setCreatedBy(employee.getEmail());
+
+            newClient.setCreatedAt(new Date());
 
             repository.save(newClient);
 
@@ -76,6 +87,7 @@ public class ClientController {
     }
 
     @GetMapping("/query")
+    @PreAuthorize("hasAnyAuthority('Comercial') or hasAnyAuthority('Administrador')")
     public ResponseEntity<List<Client>> getClients(){
         List<Client> clients = repository.findAll();
 
@@ -89,6 +101,7 @@ public class ClientController {
     }
 
     @GetMapping("/query/{id}")
+    @PreAuthorize("hasAnyAuthority('Comercial') or hasAnyAuthority('Administrador')")
     public ResponseEntity<Client> getClientById(@PathVariable("id") long id){
         Optional<Client> optionalClient = repository.findById(id);
         Client client = optionalClient.orElseThrow(() -> new RuntimeException("Client Not Found"));
@@ -100,6 +113,7 @@ public class ClientController {
     }
 
     @GetMapping("/queryFromCpf/{cpf}")
+    @PreAuthorize("hasAnyAuthority('Comercial') or hasAnyAuthority('Administrador')")
     public ResponseEntity<Object> getClientByCpf( @PathVariable("cpf") String cpf){
         Client client = service.getByCpf(cpf);
         if(client == null){
@@ -111,6 +125,7 @@ public class ClientController {
     }
 
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasAnyAuthority('Comercial') or hasAnyAuthority('Administrador')")
     public ResponseEntity<Object> updateClient(@PathVariable("id") long id, @RequestBody ClientDto clientdto) {
         Optional<Client> clientOptional = repository.findById(id);
         if (!clientOptional.isPresent()) {
@@ -122,13 +137,24 @@ public class ClientController {
         clientModel.setId(getClientOptional.getId());
         clientModel.setDateRegister(getClientOptional.getDateRegister());
         clientModel.setCpf(getClientOptional.getCpf());
+        clientModel.setCreatedBy(getClientOptional.getCreatedBy());
+        clientModel.setCreatedAt(getClientOptional.getCreatedAt());
+        Employee employee = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        clientModel.setUpdatedBy(employee.getEmail());
+        clientModel.setUpdatedAt(new Date());
+
         return ResponseEntity.status(HttpStatus.OK).body(repository.save(clientModel));
     }
 
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyAuthority('Comercial') or hasAnyAuthority('Administrador')")
     public ResponseEntity<Void> deleteClientById( @PathVariable("id") long id){
-        repository.deleteById(id);
+
+        Employee employee = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        service.deleteById(id, employee.getEmail());
+
         return ResponseEntity.ok().build();
 
     }

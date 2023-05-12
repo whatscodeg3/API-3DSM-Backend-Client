@@ -1,10 +1,12 @@
 package com.br.WhatsCodeClientMicroservice.service;
 
 import com.br.WhatsCodeClientMicroservice.dto.EmployeeDto;
+import com.br.WhatsCodeClientMicroservice.models.Client;
 import com.br.WhatsCodeClientMicroservice.models.Employee;
 import com.br.WhatsCodeClientMicroservice.repository.EmployeeRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +20,12 @@ public class EmployeeService {
     public Employee createEmployee(EmployeeDto employeeDto) {
         Employee employeeModel = new Employee();
         BeanUtils.copyProperties(employeeDto, employeeModel);
+
+        BCryptPasswordEncoder criptografar = new BCryptPasswordEncoder();
+
+        String senhaCriptografada = criptografar.encode(employeeModel.getPassword());
+
+        employeeModel.setPassword(senhaCriptografada);
         return employeeRepository.save(employeeModel);
     }
 
@@ -31,6 +39,7 @@ public class EmployeeService {
 
     public Employee updateEmployee(Integer id, EmployeeDto employeeDto) {
         Employee existingEmployee = employeeById(id);
+        Employee newEmployee = new Employee();
         BeanUtils.copyProperties(employeeDto, existingEmployee);
         return employeeRepository.save(existingEmployee);
     }
@@ -39,4 +48,5 @@ public class EmployeeService {
         Employee existingEmployee = employeeById(id);
         employeeRepository.delete(existingEmployee);
     }
+
 }
