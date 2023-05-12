@@ -1,19 +1,24 @@
 package com.br.WhatsCodeClientMicroservice.controller;
 
 import com.br.WhatsCodeClientMicroservice.dto.EmployeeDto;
+import com.br.WhatsCodeClientMicroservice.models.Client;
 import com.br.WhatsCodeClientMicroservice.models.Employee;
 import com.br.WhatsCodeClientMicroservice.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping(value = "/funcionario")
+@RequestMapping(value = "/employee")
 public class EmployeeController {
 
     @Autowired
@@ -27,8 +32,8 @@ public class EmployeeController {
 
     @GetMapping
     public ResponseEntity<List<Employee>> getAllEmployees() {
-        List<Employee> FindAllEmployees = employeeService.getAllEmployees();
-        return ResponseEntity.ok().body(FindAllEmployees);
+        List<Employee> employees = employeeService.getAllEmployees();        
+        return ResponseEntity.status(HttpStatus.OK).body(employees);
     }
 
     @GetMapping("/{id}")
