@@ -44,7 +44,7 @@ public class EmployeeController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('Administrador')")
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable Integer id) {
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable long id) {
         Employee FindOneEmployee = employeeService.employeeById(id);
         if (FindOneEmployee != null) {
             return ResponseEntity.ok().body(FindOneEmployee);
@@ -55,8 +55,7 @@ public class EmployeeController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('Administrador')")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable Integer id, @RequestBody EmployeeDto employeeDto) {
-        Employee employee = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody EmployeeDto employeeDto) {
         Employee updatedEmployee = employeeService.updateEmployee(id, employeeDto);
         if (updatedEmployee != null) {
             return ResponseEntity.ok(updatedEmployee);
@@ -67,11 +66,10 @@ public class EmployeeController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('Administrador')")
-    public ResponseEntity<Void> deleteEmployee(@PathVariable Integer id) {
-        Employee employee = employeeService.employeeById(id);
-        employeeService.deleteEmployee(id);
-      
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+        Employee employee = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        employeeService.employeeByIdSecurity(id, employee.getEmail());
+        return ResponseEntity.ok().build();
     }
 }
 

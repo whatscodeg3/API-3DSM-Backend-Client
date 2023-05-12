@@ -42,6 +42,9 @@ public class Employee implements UserDetails {
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
+    
+    @Column
+    private Date dateRegister;
 
     @Column
     private String createdBy;
