@@ -50,7 +50,7 @@ public class ClientService {
         auditing.setDeletedBy(employeeName);
         auditing.setDeletedAt(new Date());
         auditing.setEntityType("Client");
-        auditing.setEntityId(id);
+        auditing.setEntityId(client.getId().longValue());
 
         auditingRepository.save(auditing);
 
