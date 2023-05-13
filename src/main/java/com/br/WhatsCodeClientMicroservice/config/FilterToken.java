@@ -1,6 +1,7 @@
 package com.br.WhatsCodeClientMicroservice.config;
 
 
+import com.br.WhatsCodeClientMicroservice.repository.EmployeeRepository;
 import com.br.WhatsCodeClientMicroservice.repository.UserRepository;
 import com.br.WhatsCodeClientMicroservice.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class FilterToken extends OncePerRequestFilter {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -32,7 +36,7 @@ public class FilterToken extends OncePerRequestFilter {
             token = authorizationHeader.replace("Bearer ", "");
             var subject = this.tokenService.getSubject(token);
 
-            var user = this.userRepository.findByLogin(subject);
+            var user = this.employeeRepository.findByCpf(subject);
 
             var authentication = new UsernamePasswordAuthenticationToken(user,
                     null, user.getAuthorities());

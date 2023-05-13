@@ -2,6 +2,7 @@ package com.br.WhatsCodeClientMicroservice.controller;
 
 
 import com.br.WhatsCodeClientMicroservice.dto.LoginDto;
+import com.br.WhatsCodeClientMicroservice.models.Employee;
 import com.br.WhatsCodeClientMicroservice.models.User;
 import com.br.WhatsCodeClientMicroservice.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,9 @@ public class AuthController {
         Authentication authenticate = this.authenticationManager
                 .authenticate(usernamePasswordAuthenticationToken);
 
-        var user = (User) authenticate.getPrincipal();
+        var employee = (Employee) authenticate.getPrincipal();
 
-        return tokenService.gerarToken(user);
+        return tokenService.gerarToken(employee);
 
     }
 }

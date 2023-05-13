@@ -1,6 +1,9 @@
 package com.br.WhatsCodeClientMicroservice.dto;
 
+import jakarta.persistence.Column;
 import lombok.Data;
+
+import java.util.Date;
 
 @Data
 public class EmployeeDto {
@@ -14,5 +17,13 @@ public class EmployeeDto {
 	private String role;
 	
 	private String password;
+
+	private String createdBy;
+
+	private Date createdAt;
+
+	private String updatedBy;
+
+	private Date updatedAt;
 
 }
