@@ -41,7 +41,7 @@ public class EmployeeController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('Administrador')")
+    @PreAuthorize("hasAnyAuthority('Administrador') or hasAnyAuthority('Comercial') or hasAnyAuthority('Financeiro')")
     public ResponseEntity<List<Employee>> getAllEmployees() {
         List<Employee> employees = employeeService.getAllEmployees();        
         return ResponseEntity.status(HttpStatus.OK).body(employees);
