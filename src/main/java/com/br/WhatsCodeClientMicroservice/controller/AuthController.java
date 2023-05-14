@@ -36,4 +36,9 @@ public class AuthController {
         return tokenService.gerarToken(employee);
 
     }
+    
+    @GetMapping("/check")
+    public String check() {
+        return "OK";
+    }
 }
