@@ -1,6 +1,7 @@
 package com.br.WhatsCodeClientMicroservice.controller;
 
 import com.br.WhatsCodeClientMicroservice.dto.EmployeeDto;
+import com.br.WhatsCodeClientMicroservice.dto.ReplacementEmployeeDto;
 import com.br.WhatsCodeClientMicroservice.models.Client;
 import com.br.WhatsCodeClientMicroservice.models.Employee;
 import com.br.WhatsCodeClientMicroservice.service.EmployeeService;
@@ -40,8 +41,9 @@ public class EmployeeController {
         return ResponseEntity.ok().build();
     }
 
+
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('Administrador')")
+    @PreAuthorize("hasAnyAuthority('Administrador') or hasAnyAuthority('Comercial') or hasAnyAuthority('Financeiro')")
     public ResponseEntity<List<Employee>> getAllEmployees() {
         List<Employee> employees = employeeService.getAllEmployees();        
         return ResponseEntity.status(HttpStatus.OK).body(employees);
@@ -58,6 +60,17 @@ public class EmployeeController {
         }
     }
 
+    @PutMapping("/replacement/{id}")
+    @PreAuthorize("hasAnyAuthority('Administrador')")
+    public ResponseEntity<Employee> ReplacementEmployee(@PathVariable Long id, @RequestBody ReplacementEmployeeDto replacementEmployeeDto) {
+        Employee updatedEmployee = employeeService.replacementEmployee(id, replacementEmployeeDto);
+        if (updatedEmployee != null) {
+            return ResponseEntity.ok(updatedEmployee);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('Administrador')")
     public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody EmployeeDto employeeDto) {

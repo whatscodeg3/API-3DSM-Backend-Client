@@ -1,6 +1,7 @@
 package com.br.WhatsCodeClientMicroservice.service;
 
 import com.br.WhatsCodeClientMicroservice.dto.EmployeeDto;
+import com.br.WhatsCodeClientMicroservice.dto.ReplacementEmployeeDto;
 import com.br.WhatsCodeClientMicroservice.models.AuditingLog;
 import com.br.WhatsCodeClientMicroservice.models.Client;
 import com.br.WhatsCodeClientMicroservice.models.Employee;
@@ -53,6 +54,23 @@ public class EmployeeService {
         
         var employeeModel = new Employee();
         BeanUtils.copyProperties(employeeDto, employeeModel);
+        
+        Employee getExistingEmployee = existingEmployee;
+        employeeModel.setId(getExistingEmployee.getId());
+        employeeModel.setDateRegister(getExistingEmployee.getDateRegister());
+        employeeModel.setCpf(getExistingEmployee.getCpf());
+        Employee employee = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        employeeModel.setUpdatedBy(employee.getEmail());
+        employeeModel.setUpdatedAt(new Date());
+        
+        return employeeRepository.save(employeeModel);
+    }
+    
+    public Employee replacementEmployee(Long id, ReplacementEmployeeDto replacementEmployeeDto) {
+        Employee existingEmployee = employeeById(id);
+        
+        var employeeModel = new Employee();
+        BeanUtils.copyProperties(replacementEmployeeDto, employeeModel);
         
         Employee getExistingEmployee = existingEmployee;
         employeeModel.setId(getExistingEmployee.getId());
