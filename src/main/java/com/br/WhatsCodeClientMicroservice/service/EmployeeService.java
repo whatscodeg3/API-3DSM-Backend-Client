@@ -7,6 +7,8 @@ import com.br.WhatsCodeClientMicroservice.models.Client;
 import com.br.WhatsCodeClientMicroservice.models.Employee;
 import com.br.WhatsCodeClientMicroservice.repository.AuditingLogRepository;
 import com.br.WhatsCodeClientMicroservice.repository.EmployeeRepository;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -56,6 +58,22 @@ public class EmployeeService {
         BeanUtils.copyProperties(employeeDto, employeeModel);
         
         Employee getExistingEmployee = existingEmployee;
+        
+        if (StringUtils.isEmpty(employeeModel.getName())) {
+        	employeeModel.setName(getExistingEmployee.getName());
+        }
+        if (StringUtils.isEmpty(employeeModel.getEmail())) {
+        	employeeModel.setEmail(getExistingEmployee.getEmail());
+        }
+        if (StringUtils.isEmpty(employeeModel.getCpf())) {
+        	employeeModel.setCpf(getExistingEmployee.getCpf());
+        }
+        if (StringUtils.isEmpty(employeeModel.getRole())) {
+        	employeeModel.setRole(getExistingEmployee.getRole());
+        }
+        if (StringUtils.isEmpty(employeeModel.getPassword())) {
+        	employeeModel.setPassword(getExistingEmployee.getPassword());
+        }
         employeeModel.setId(getExistingEmployee.getId());
         employeeModel.setDateRegister(getExistingEmployee.getDateRegister());
         employeeModel.setCpf(getExistingEmployee.getCpf());
@@ -73,6 +91,23 @@ public class EmployeeService {
         BeanUtils.copyProperties(replacementEmployeeDto, employeeModel);
         
         Employee getExistingEmployee = existingEmployee;
+        
+        if (StringUtils.isEmpty(employeeModel.getName())) {
+        	employeeModel.setName(getExistingEmployee.getName());
+        }
+        if (StringUtils.isEmpty(employeeModel.getEmail())) {
+        	employeeModel.setEmail(getExistingEmployee.getEmail());
+        }
+        if (StringUtils.isEmpty(employeeModel.getCpf())) {
+        	employeeModel.setCpf(getExistingEmployee.getCpf());
+        }
+        if (StringUtils.isEmpty(employeeModel.getRole())) {
+        	employeeModel.setRole(getExistingEmployee.getRole());
+        }
+        if (StringUtils.isEmpty(employeeModel.getPassword())) {
+        	employeeModel.setPassword(getExistingEmployee.getPassword());
+        }
+        
         employeeModel.setId(getExistingEmployee.getId());
         employeeModel.setDateRegister(getExistingEmployee.getDateRegister());
         employeeModel.setCpf(getExistingEmployee.getCpf());

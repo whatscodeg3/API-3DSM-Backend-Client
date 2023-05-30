@@ -1,6 +1,7 @@
 package com.br.WhatsCodeClientMicroservice.controller;
 
 import com.br.WhatsCodeClientMicroservice.dto.ClientDto;
+import org.apache.commons.lang3.StringUtils;
 import com.br.WhatsCodeClientMicroservice.mapper.AddresMapper;
 import com.br.WhatsCodeClientMicroservice.models.Address;
 import com.br.WhatsCodeClientMicroservice.models.Client;
@@ -134,6 +135,50 @@ public class ClientController {
         var clientModel = new Client();
         BeanUtils.copyProperties(clientdto, clientModel);
         Client getClientOptional = clientOptional.get();
+        
+        if (StringUtils.isEmpty(clientModel.getFullName())) {
+            clientModel.setFullName(getClientOptional.getFullName());
+        }
+        if (StringUtils.isEmpty(clientModel.getEmail())) {
+            clientModel.setEmail(getClientOptional.getEmail());
+        }
+        if (StringUtils.isEmpty(clientModel.getTelephone())) {
+            clientModel.setTelephone(getClientOptional.getTelephone());
+        }
+        if (clientModel.getBirthDate() == null) {
+            clientModel.setBirthDate(getClientOptional.getBirthDate());
+        }
+        
+        Address newAddress = clientModel.getAddress();
+        Address ExistingAddress = getClientOptional.getAddress();
+
+        if (newAddress == null) {
+            clientModel.setAddress(ExistingAddress);
+        } else {
+            if (StringUtils.isEmpty(newAddress.getCep())) {
+                newAddress.setCep(ExistingAddress.getCep());
+            }
+            if (StringUtils.isEmpty(newAddress.getPublicPlace())) {
+                newAddress.setPublicPlace(ExistingAddress.getPublicPlace());
+            }
+            
+            if (newAddress.getNumber() == null) {
+                newAddress.setNumber(ExistingAddress.getNumber());
+            }
+            if (StringUtils.isEmpty(newAddress.getNeighborhood())) {
+                newAddress.setNeighborhood(ExistingAddress.getNeighborhood());
+            }
+            if (StringUtils.isEmpty(newAddress.getCity())) {
+                newAddress.setCity(ExistingAddress.getCity());
+            }
+            if (StringUtils.isEmpty(newAddress.getState())) {
+                newAddress.setState(ExistingAddress.getState());
+            }
+            if (StringUtils.isEmpty(newAddress.getComplement())) {
+                newAddress.setComplement(ExistingAddress.getComplement());
+            }
+        }
+        
         clientModel.setId(getClientOptional.getId());
         clientModel.setDateRegister(getClientOptional.getDateRegister());
         clientModel.setCpf(getClientOptional.getCpf());

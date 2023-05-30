@@ -19,6 +19,9 @@ public class Address {
 
     @Column
     private String publicPlace;
+    
+    @Column
+    private Number number;
 
     @Column
     private String neighborhood;

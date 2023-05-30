@@ -87,6 +87,7 @@ public class EmployeeController {
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
         Employee employee = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         employeeService.employeeByIdSecurity(id, employee.getEmail());
+        employeeService.deleteEmployee(id, employee.getEmail());
         return ResponseEntity.ok().build();
     }
 }
